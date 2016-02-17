@@ -9,6 +9,7 @@ LAST-MODIFIED:<%= Time.now.strftime("%Y%m%dT%H%M%SZ") %>
 TZNAME:<%= ENV['TZ'] %>
 END:VTIMEZONE
 <% for @todo in @todos -%>
+<% if @todo.state == 'active' -%>
 <% if (@todo.project_id == params['project_id'].to_i or @todo.context_id == params['context_id'].to_i) and not @todo.completed_at -%>
 BEGIN:VTODO
 DTSTAMP:<%= @todo.created_at.strftime("%Y%m%dT%H%M%SZ") %>
@@ -30,6 +31,7 @@ URL:<%= project_url(@todo.project) %>
 URL:<%= context_url(@todo.context) %>
 <% end -%>
 END:VTODO
+<% end -%>
 <% end -%>
 <% end -%>
 END:VCALENDAR
