@@ -9,6 +9,7 @@ LAST-MODIFIED:<%= Time.now.strftime("%Y%m%dT%H%M%SZ") %>
 TZNAME:<%= ENV['TZ'] %>
 END:VTIMEZONE
 <% for @todo in @todos -%>
+<% if (@todo.project_id == params['project_id'].to_i or @todo.context_id == params['context_id'].to_i) and not @todo.completed_at -%>
 BEGIN:VTODO
 DTSTAMP:<%= @todo.created_at.strftime("%Y%m%dT%H%M%SZ") %>
 DTSTART;VALUE=DATE:<%= @todo.created_at.strftime("%Y%m%d") %>
@@ -19,6 +20,9 @@ DESCRIPTION:<%= format_ical_notes(@todo.notes) %>
 <% end -%>
 <% if @todo.due -%>
 DUE;VALUE=DATE:<%= @todo.due.strftime("%Y%m%d") %>
+DTSTART;VALUE=DATE:<%= @todo.due.strftime("%Y%m%d") %>
+<% else -%>
+DTSTART;VALUE=DATE:<%= @todo.created_at.strftime("%Y%m%d") %>
 <% end -%>
 <% if @todo.project_id -%>
 URL:<%= project_url(@todo.project) %>
@@ -26,5 +30,6 @@ URL:<%= project_url(@todo.project) %>
 URL:<%= context_url(@todo.context) %>
 <% end -%>
 END:VTODO
+<% end -%>
 <% end -%>
 END:VCALENDAR
